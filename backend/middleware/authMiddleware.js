@@ -7,11 +7,10 @@ const authMiddleware = (req, res, next) => {
   if (!token) return res.status(401).json({ msg: "No autorizado" });
 
   try {
-    const decoded = jwt.verify(token, "secreto_seguro");
+    const decoded = jwt.verify(token,process.env.JWT_SECRET);
     req.user = decoded;
     next();
   } catch (error) {
-    console.log("Error en la verificación del token:", error.message); // <-- IMPRIME ERRORES
     res.status(401).json({ msg: "Token no válido" });
   }
 };

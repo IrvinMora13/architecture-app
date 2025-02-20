@@ -1,7 +1,6 @@
-// src/pages/Dashboard.tsx
 import { useEffect, useState } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { getCurrentUser, logoutUser } from "../../services/authService";
 
 const Dashboard = () => {
   const [user, setUser] = useState<any>(null);
@@ -9,16 +8,11 @@ const Dashboard = () => {
 
   useEffect(() => {
     const fetchUserData = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        const res = await axios.get("http://localhost:5000/api/authMe/me", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-
-        setUser(res.data);
-      } catch (error) {
-        localStorage.removeItem("token");
+      const userData = await getCurrentUser();
+      if (!userData) {
         navigate("/login");
+      } else {
+        setUser(userData);
       }
     };
 
@@ -35,7 +29,7 @@ const Dashboard = () => {
           <button
             className="btn btn-danger"
             onClick={() => {
-              localStorage.removeItem("token");
+              logoutUser();
               navigate("/login");
             }}
           >
