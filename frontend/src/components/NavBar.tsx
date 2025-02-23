@@ -1,28 +1,43 @@
 import { useAuth } from "../context/AuthContext";
-import { Link } from "react-router-dom";
-import { Navbar, Nav, Container } from "react-bootstrap";
+import { Link, useNavigate } from "react-router-dom";
+import { Navbar, Nav, Container, Button } from "react-bootstrap";
+import { useEffect, useState } from "react";
 
 const NavBar = () => {
   const { isAuthenticated, logout } = useAuth();
+  const navigate = useNavigate();
+  const [auth, setAuth] = useState(isAuthenticated);
+
+  useEffect(() => {
+    setAuth(isAuthenticated); 
+  }, [isAuthenticated]);
 
   return (
     <Navbar expand="lg" className="bg-body-tertiary">
       <Container>
-        <Navbar.Brand as={Link} to="/">React-Bootstrap</Navbar.Brand>
+        <Navbar.Brand as={Link} to="/">LogoName</Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
-          <Nav className="me-auto">
-            <Nav.Link as={Link} to="/">Home</Nav.Link>
-            {isAuthenticated ? (
-              <>
-                <Nav.Link as={Link} to="/dashboard">Dashboard</Nav.Link>
-                <Nav.Link onClick={logout}>Cerrar sesión</Nav.Link>
-              </>
+          <Nav className="col mx-auto justify-content-center">
+            <Nav.Link as={Link} to="/" active>Home</Nav.Link>
+            <Nav.Link as={Link} to="/about">About Us</Nav.Link>
+            <Nav.Link as={Link} to="/contact">Contact</Nav.Link>
+          </Nav>
+          <Nav>
+            {auth ? (
+              <Button
+                variant="outline-danger"
+                onClick={() => {
+                  logout();
+                  navigate("/login"); 
+                }}
+              >
+                Logout
+              </Button>
             ) : (
-              <>
-                <Nav.Link as={Link} to="/login">Iniciar sesión</Nav.Link>
-                <Nav.Link as={Link} to="/register">Registrar</Nav.Link>
-              </>
+              <Button variant="outline-primary" onClick={() => navigate("/login")}>
+                Login
+              </Button>
             )}
           </Nav>
         </Navbar.Collapse>

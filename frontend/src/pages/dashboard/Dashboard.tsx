@@ -1,46 +1,38 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { getCurrentUser, logoutUser } from "../../services/authService";
+import { useAuth } from "../../context/AuthContext";
+import Sidebar from "../../components/Sidebar";
+import Card from "../../components/Card";
+import Chart from "../../components/Chart";
+import Table from "../../components/Table";
 
 const Dashboard = () => {
-  const [user, setUser] = useState<any>(null);
+  const { user, logout, loading } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchUserData = async () => {
-      const userData = await getCurrentUser();
-      if (!userData) {
-        navigate("/login");
-      } else {
-        setUser(userData);
-      }
-    };
+    if (!user && !loading) navigate("/login");
+  }, [user, loading, navigate]);
 
-    fetchUserData();
-  }, [navigate]);
+  if (loading) return <p>Cargando...</p>;
 
   return (
-    <div className="container mt-5">
-      <h2>Dashboard</h2>
-      {user ? (
-        <div>
-          <h4>Bienvenido, {user.nombre}</h4>
-          <p>Email: {user.email}</p>
-          <button
-            className="btn btn-danger"
-            onClick={() => {
-              logoutUser();
-              navigate("/login");
-            }}
-          >
-            Cerrar sesión
-          </button>
+    <div className="dashboard-container">
+      <Sidebar />
+      <div className="dashboard-content">
+        <div className="dashboard-main">
+          <h1>Panel de Control</h1>
+          <div className="dashboard-stats">
+            <Card/>
+            <Card />
+            <Card />
+          </div>
+          <Chart />
+          <Table />
         </div>
-      ) : (
-        <p>Cargando...</p>
-      )}
+      </div>
     </div>
   );
 };
-
-export default Dashboard;
+  
+  export default Dashboard;

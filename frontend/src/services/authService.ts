@@ -14,8 +14,14 @@ export const registerUser = async (email: string, password: string) => {
 export const loginUser = async (email: string, password: string) => {
   try {
     const res = await axios.post(`${API_URL}/login`, { email, password });
-    localStorage.setItem("token", res.data.token);
-    return { success: true };
+    const token = res.data.token;
+
+    if (token) {
+      localStorage.setItem("token", token);
+      return { success: true, token }; 
+    } else {
+      return { success: false, message: "No se recibió un token" };
+    }
   } catch (error: any) {
     return { success: false, message: error.response?.data?.message || "Error al iniciar sesión" };
   }
@@ -28,12 +34,13 @@ export const logoutUser = () => {
 export const getCurrentUser = async () => {
   try {
     const token = localStorage.getItem("token");
+
     if (!token) return null;
     
     const res = await axios.get(`${API_URL}/me`, {
       headers: { Authorization: `Bearer ${token}` },
     });
-
+    console.log("✅ Respuesta del servidor:", res.data);
     return res.data;
   } catch (error) {
     logoutUser();

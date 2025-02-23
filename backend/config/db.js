@@ -15,6 +15,7 @@ const connectDB = async () => {
     try {
         await pool.getConnection();
         console.log("✅ Base de datos conectada correctamente.");
+        return pool
     } catch (error) {
         console.error("❌ Error al conectar la base de datos:", error.message);
         process.exit(1);
