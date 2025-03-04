@@ -1,0 +1,23 @@
+.dashboardContainer {
+  transition: margin-left 0.3s ease-in-out;
+  flex-grow: 1;
+  padding: 20px;
+}
+
+.expanded {
+  margin-left: 250px;
+}
+
+.collapsed {
+  margin-left: 60px;
+}
+
+.dashboard-stats {
+  margin-top: 20px;
+  justify-content: space-between;
+}
+
+.chart-container {
+  width: 100%;
+  height: 400px;
+}
